@@ -51,9 +51,13 @@ module top_module(
     wire [31:0] data_out   [0:3];  // available for future display / UART stretch goal
     wire [3:0]  valid_out;
 
-    // ── Tag comparator outputs ────────────────────────────────
-    wire        hit;
-    wire [1:0]  hit_way;
+wire [47:0] tag_bus;
+wire [127:0] data_bus;
+wire [3:0] valid_bus;
+
+    // // ── Tag comparator outputs ────────────────────────────────
+    // wire        hit;
+    // wire [1:0]  hit_way;
 
     // ── LRU controller outputs ────────────────────────────────
     wire [1:0]  lru_way;
@@ -107,28 +111,47 @@ module top_module(
         .index  (index_decoded),
         .offset (offset_decoded)
     );
+    //
+    // // ── 3. Cache Memory ───────────────────────────────────────────────────────
+    // cache_memory u_cache_mem (
+    //     .clk      (clk),
+    //     .index    (index_decoded),
+    //     .way_sel  (way_sel),
+    //     .write_en (write_en),
+    //     .tag_in   (tag_to_write),
+    //     .data_in  (data_to_write),
+    //     .tag_out  (tag_out),
+    //     .data_out (data_out),
+    //     .valid_out(valid_out)
+    // );
+    //
+    // // ── 4. Tag Comparator ─────────────────────────────────────────────────────
+    // tag_comparator u_tag_cmp (
+    //     .tag_in    (tag_decoded),
+    //     .tag_stored(tag_out),       // from cache_memory
+    //     .valid_bits(valid_out),
+    //     .hit       (hit),
+    //     .hit_way   (hit_way)
+    // );
+cache_memory cm (
+    .clk(clk),
+    .index(index),
+    .way_sel(way_sel),
+    .write_en(write_en),
+    .tag_in(tag_in),
+    .data_in(data_in),
+    .tag_out(tag_bus),
+    .data_out(data_bus),
+    .valid_out(valid_bus)
+);
 
-    // ── 3. Cache Memory ───────────────────────────────────────────────────────
-    cache_memory u_cache_mem (
-        .clk      (clk),
-        .index    (index_decoded),
-        .way_sel  (way_sel),
-        .write_en (write_en),
-        .tag_in   (tag_to_write),
-        .data_in  (data_to_write),
-        .tag_out  (tag_out),
-        .data_out (data_out),
-        .valid_out(valid_out)
-    );
-
-    // ── 4. Tag Comparator ─────────────────────────────────────────────────────
-    tag_comparator u_tag_cmp (
-        .tag_in    (tag_decoded),
-        .tag_stored(tag_out),       // from cache_memory
-        .valid_bits(valid_out),
-        .hit       (hit),
-        .hit_way   (hit_way)
-    );
+tag_comparator tc (
+    .tag_in(tag_in),
+    .tag_stored(tag_bus),
+    .valid_bits(valid_bus),
+    .hit(hit),
+    .hit_way(hit_way)
+);
 
     // ── 5. LRU Controller ────────────────────────────────────────────────────
     lru_controller u_lru (
