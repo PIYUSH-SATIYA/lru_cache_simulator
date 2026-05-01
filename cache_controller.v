@@ -1,4 +1,3 @@
-// =============================================================================
 // Module: cache_controller
 // Project: Hardware LRU Cache Simulator
 // Board: Nexys A7 (XC7A100T)
@@ -24,7 +23,6 @@
 //  MISS_EVICT ──────────► MISS_LOAD ──────────────────────────►│
 //   (find LRU way)         (write new data into that way)      │
 //                                                              │
-// =============================================================================
 
 module cache_controller(
     input        clk,
@@ -60,9 +58,6 @@ module cache_controller(
     output reg        cache_miss_out  // 1-cycle pulse on miss
 );
 
-    // -------------------------------------------------------------------------
-    // State encoding (one-hot would also work but binary is fine at this scale)
-    // -------------------------------------------------------------------------
     localparam IDLE        = 3'd0;
     localparam LOOKUP      = 3'd1;
     localparam HIT_UPDATE  = 3'd2;

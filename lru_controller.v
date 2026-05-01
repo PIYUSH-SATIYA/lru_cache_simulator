@@ -1,4 +1,3 @@
-// =============================================================================
 // Module: lru_controller
 // Project: Hardware LRU Cache Simulator
 // Board: Nexys A7 (XC7A100T)
@@ -19,7 +18,6 @@
 //   Initial state  → [0, 1, 2, 3]   (way3 is LRU)
 //   Access way 2   → [1, 2, 0, 3]   (way2 freshest, way3 still LRU)
 //   Access way 3   → [2, 3, 1, 0]   (way3 freshest, way1 is now LRU)
-// =============================================================================
 
 module lru_controller(
     input        clk,

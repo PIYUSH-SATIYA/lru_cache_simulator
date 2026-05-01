@@ -36,6 +36,8 @@ module top_module #(
     wire cache_miss_out;
 
     wire access_req_db;
+    reg  access_req_db_d = 1'b0;
+    wire access_req_pulse;
     wire reset_db;
 
     wire [7:0] seg_raw;
@@ -52,6 +54,15 @@ module top_module #(
         .btn_in(BTNL),
         .btn_out(reset_db)
     );
+
+    always @(posedge clk) begin
+        if (reset_db)
+            access_req_db_d <= 1'b0;
+        else
+            access_req_db_d <= access_req_db;
+    end
+
+    assign access_req_pulse = access_req_db & ~access_req_db_d;
 
     addr_decoder u_addr_dec (
         .addr(SW),
@@ -92,7 +103,7 @@ module top_module #(
     cache_controller u_ctrl (
         .clk(clk),
         .reset(reset_db),
-        .access_req(access_req_db),
+        .access_req(access_req_pulse),
         .addr_in(SW),
         .hit(hit),
         .hit_way(hit_way),

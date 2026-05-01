@@ -9,9 +9,7 @@ module stats_display(
     output reg [1:0]  led           // led[0]=hit, led[1]=miss
 );
 
-    //============================================================
     // Hit and Miss Counters
-    //============================================================
     reg [15:0] hit_count;
     reg [15:0] miss_count;
 
@@ -29,10 +27,8 @@ module stats_display(
         end
     end
 
-    //============================================================
     // LED Pulse Logic
     // Keep LED ON for 2 clock cycles
-    //============================================================
     reg [1:0] hit_led_timer;
     reg [1:0] miss_led_timer;
 
@@ -60,11 +56,9 @@ module stats_display(
         end
     end
 
-    //============================================================
     // Split Counters into Hex Digits
     // Digits 7:4 = hit count
     // Digits 3:0 = miss count
-    //============================================================
     wire [3:0] digit [7:0];
 
     assign digit[0] = miss_count[3:0];
@@ -77,10 +71,8 @@ module stats_display(
     assign digit[6] = hit_count[11:8];
     assign digit[7] = hit_count[15:12];
 
-    //============================================================
     // Display Refresh Counter
     // Uses upper 3 bits for ~763 Hz multiplexing per digit
-    //============================================================
     reg [16:0] refresh_counter;
 
     always @(posedge clk or posedge reset) begin
@@ -94,9 +86,7 @@ module stats_display(
 
     reg [3:0] current_digit;
 
-    //============================================================
     // Digit Select Logic
-    //============================================================
     always @(*) begin
         an = 8'b11111111;
         current_digit = 4'h0;
@@ -144,11 +134,9 @@ module stats_display(
         endcase
     end
 
-    //============================================================
     // Hex to Seven-Segment Decoder
     // Active-low for Nexys A7
     // seg = {dp,g,f,e,d,c,b,a}
-    //============================================================
     always @(*) begin
         case (current_digit)
             4'h0: seg = 8'b11000000;
